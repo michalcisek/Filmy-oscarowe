@@ -23,7 +23,7 @@ web %>%
 # Dodanie identyfikatora wygranej i roku wydania --------------------------
 
 df<-data.frame("Film"=c(),"Production.company.s."=c() ,"Producer.s."=c(),"Oscar"=c(),"rok"=c())
-for (i in 1:88){
+for (i in 1:length(pr)){
   #dodaje zmiennÄ… objasniana
   df1<-html_table(pr[[i]])
   df1<-as.data.frame(df1)
@@ -71,7 +71,7 @@ lata<-df[,3]
 wyniki<-mapply(tytul=tytuly,znajdz_id,rok=lata)
 
 id<-c()
-for (i in 1:528){
+for (i in 1:length(filmy)){
   if(nrow(wyniki[[i]])==0){
     #jeĹ›li nie znalazlo dla konkretnego roku to robi ogolny search
     dd<-search_by_title(filmy[i])
@@ -86,6 +86,9 @@ for (i in 1:528){
   }
 }
 
+
+
+#sprawdzenie reczne za pomoca funkcji 'porownaj' czy na pewno dobre id pobrane od 1990
 porownaj<-function(range){
   for (id in range){
     print(list(df[id,c(1,3)],wyniki[[id]][,1:3]))
@@ -93,8 +96,6 @@ porownaj<-function(range){
     if (inp=="y") next else stop()
   }
 }
-
-#sprawdzone recznie za pomoca funkcji 'porownaj' czy na pewno dobre id pobrane od 1990
 porownaj(371:528)
 
 
@@ -410,6 +411,6 @@ df$gross[brak_gross]<-gross
 braki-colSums(apply(df,2,is.na))
 rm(braki,brak_open,open,brak_budget,budget,brak_gross,gross)
 
+#jeszcze przed gala
+df[527,"Oscar"]<-0
 write.csv2(df,"dane_oscar.csv")
-df1<-df[complete.cases(df),]
-
